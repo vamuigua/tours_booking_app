@@ -8,44 +8,49 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
-class RegisterController extends Controller
+class LoginController extends Controller
 {
     public function __invoke(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'max:255', 'email', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
         // Request from the frontend web app (session is managed by cookies)
         if (EnsureFrontendRequestsAreStateful::fromFrontend($request)) {
-            Auth::guard('web')->login($user, true);
+            if (!Auth::guard('web')->attempt(request(['email', 'password']), request('remember'))) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
+                ]);
+            }
 
             $request->session()->regenerate();
 
             return response()->noContent();
         } else {
             // Request from API clients (mobile app or third-party service)
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
+                ]);
+            }
+
             $device = substr($request->userAgent() ?? '', 0, 255);
 
-            $expiresAt = now()->addMinutes(config('session.lifetime'));
+            $expiresAt = $request->remember ? null : now()->addMinutes(config('session.lifetime'));
 
             $token = $user->createToken($device, expiresAt: $expiresAt)->plainTextToken;
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-                'expires_in' => $request->remember ? null : config('session.lifetime') * 60, // in seconds
+                'expires_in' => $request->remember ? null : config('session.lifetime') * 60 // in seconds
             ], Response::HTTP_CREATED);
         }
     }
