@@ -13,6 +13,10 @@ class Booking extends Model
 
     protected $guarded = ['id'];
 
+    const STATUS_PENDING = 'pending';
+    const STATUS_CONFIRMED = 'confirmed';
+    const STATUS_CANCELLED = 'cancelled';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -26,5 +30,10 @@ class Booking extends Model
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        return $this->tour->price * $this->tickets->count();
     }
 }

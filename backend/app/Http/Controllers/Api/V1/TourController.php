@@ -33,12 +33,12 @@ class TourController extends Controller
     {
         $tour->update($request->validated());
 
-        return response()->json(TourResource::make($tour));
+        return TourResource::make($tour);
     }
 
     public function destroy(Tour $tour)
     {
-        if (auth()->user()->role !== User::ROLE_ADMIN) {
+        if (!auth()->user()->isAdmin()) {
             return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 

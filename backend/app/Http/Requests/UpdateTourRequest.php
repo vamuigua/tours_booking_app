@@ -12,7 +12,7 @@ class UpdateTourRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->role === User::ROLE_ADMIN;
+        return auth()->user()->isAdmin();
     }
 
     /**

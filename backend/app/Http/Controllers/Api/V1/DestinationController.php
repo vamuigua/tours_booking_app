@@ -33,12 +33,12 @@ class DestinationController extends Controller
     {
         $destination->update($request->validated());
 
-        return response()->json(DestinationResource::make($destination));
+        return DestinationResource::make($destination);
     }
 
     public function destroy(Destination $destination)
     {
-        if (auth()->user()->role !== User::ROLE_ADMIN) {
+        if (!auth()->user()->isAdmin()) {
             return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
