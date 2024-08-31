@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Api\V1\DestinationController;
+use App\Http\Controllers\Api\V1\TourController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +22,5 @@ Route::post('auth/login', Auth\LoginController::class);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('auth/logout', Auth\LogoutController::class);
     Route::apiResource('destinations', DestinationController::class);
+    Route::apiResource('tours', TourController::class);
 });

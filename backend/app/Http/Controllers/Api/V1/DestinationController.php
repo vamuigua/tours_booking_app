@@ -33,7 +33,7 @@ class DestinationController extends Controller
     {
         $destination->update($request->validated());
 
-        return response()->json(DestinationResource::make($destination), Response::HTTP_OK);
+        return response()->json(DestinationResource::make($destination));
     }
 
     public function destroy(Destination $destination)
