@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\User;
 use App\Models\Destination;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;

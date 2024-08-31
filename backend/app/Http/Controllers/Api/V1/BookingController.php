@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\User;
 use App\Models\Booking;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -26,13 +25,6 @@ class BookingController extends Controller
 
     public function store(StoreBookingRequest $request)
     {
-        if (Booking::where('user_id', auth()->id())->where('tour_id', $request->tour_id)->exists()) {
-            return response()->json([
-                'message' => 'You already have a booking for this tour.',
-                'errors' => ['general' => ['You already have a booking for this tour.']],
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         $booking = Booking::create($request->validated());
 
         $booking->load('user', 'tour', 'tickets');

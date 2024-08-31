@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\DestinationController;
+use App\Http\Controllers\Api\V1\TicketController;
 use App\Http\Controllers\Api\V1\TourController;
 
 /*
@@ -25,4 +26,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('destinations', DestinationController::class);
     Route::apiResource('tours', TourController::class);
     Route::apiResource('bookings', BookingController::class)->except('update', 'destroy');
+    Route::apiResource('tickets', TicketController::class)->only('index', 'store');
 });
