@@ -47,6 +47,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    const ROLE_ADMIN = 'admin';
+    const ROLE_USER = 'user';
+
     public function tours(): HasManyThrough
     {
         return $this->hasManyThrough(Tour::class, Booking::class);
