@@ -19,5 +19,9 @@ export const useTours = defineStore('tours', () => {
         })
     }
 
-    return { errors, loading, getTours, getTour, tours, tourDetails };
+    function resetErrors(){
+        errors.value = {}
+    }
+
+    return { errors, loading, getTours, getTour, tours, tourDetails, resetErrors };
 });

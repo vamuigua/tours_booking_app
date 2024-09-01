@@ -57,7 +57,11 @@ export const useBookings = defineStore("bookings", () => {
             });
     }
 
+    function resetErrors() {
+        errors.value = {}
+    }
+
     return {
-        errors, loading, bookingDetails, bookTour, getBooking, getUserBooking
+        errors, loading, bookingDetails, bookTour, getBooking, getUserBooking, resetErrors
     };
 })

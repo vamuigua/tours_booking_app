@@ -45,5 +45,10 @@ export const useTickets = defineStore("tickets", () => {
             });
     }
 
-    return { errors, loading, tickets, getTickets, generateTicket };
+
+    function resetErrors() {
+        errors.value = {}
+    }
+
+    return { errors, loading, tickets, getTickets, generateTicket, resetErrors };
 })

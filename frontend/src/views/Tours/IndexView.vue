@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h1 class="text-3xl font-bold mb-4">Available Tours</h1>
+        <h1 class="text-3xl font-bold mb-4 text-center">Available Tours</h1>
         <div v-if="tourStore.tours.length <= 0" class="text-center my-8">
             Loading...
         </div>
         <div v-else>
-            <div v-for="tour in tourStore.tours" :key="tour.id" class="my-4 p-4 border-2 border-gray-200">
+            <div v-for="tour in tourStore.tours" :key="tour.id" class="my-4 p-4 border-2 border-gray-200 rounded">
                 <h2 class="text-xl font-semibold">📍 {{ tour.name }}</h2>
                 <p class="text-gray-600">Destination: {{ tour.destination.name }}</p>
                 <p class="text-gray-600 font-semibold">Pricing: KSH. {{ tour.price }}</p>
