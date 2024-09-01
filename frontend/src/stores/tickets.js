@@ -10,19 +10,9 @@ export const useTickets = defineStore("tickets", () => {
         if (loading.value) return
         loading.value = true
 
-        return window.axios
-            .get("tickets")
-            .then((response) => {
-                tickets.value = response.data.data
-            })
-            .catch((error) => {
-                if (error.response.status === 422) {
-                    errors.value = error.response.data.errors
-                }
-            })
-            .finally(() => {
-                loading.value = false
-            });
+        return window.axios.get("tickets").then((response) => (
+            tickets.value = response.data.data
+        ))
 
     }
 

@@ -18,24 +18,21 @@
                 </div>
 
                 <div class="mt-2 p-6">
-                    <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
-                    <hr class="mb-4">
-
                     <div v-if="bookingsStore.bookingDetails == null" class="space-y-4">
-                        <div class="flex justify-center items-center">
+                        <div class="flex flex-col gap-2">
                             <button @click="bookingsStore.bookTour({ tour_id: $route.params.id })" type="button"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                :disabled="bookingsStore.loading">
+                                class="btn btn-primary" :disabled="bookingsStore.loading">
                                 <IconSpinner class="animate-spin" v-show="bookingsStore.loading" />
                                 Book Tour
                             </button>
                         </div>
-
                         <ValidationError :errors="bookingsStore.errors" field="tour_id" />
                         <ValidationError :errors="bookingsStore.errors" field="general" />
                     </div>
 
                     <div v-else class="space-y-4">
+                        <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
+                        <hr class="mb-4">
                         <p class="text-gray-600">Booked on: {{ Date(bookingsStore.bookingDetails.created_at) }}</p>
                         <p class="text-gray-600">Status: {{ bookingsStore.bookingDetails.status.toUpperCase() }}</p>
                         <p class="text-gray-600">Name: {{ bookingsStore.bookingDetails.user.name }}</p>
@@ -49,34 +46,35 @@
                                 <li class="text-gray-600">#{{ ticket.ticket_number }}</li>
                             </ul>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="mt-8 bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-4">Generate Booking Ticket</h3>
-                    <form @submit.prevent="generateBookingTicket" novalidate>
-                        <div class="space-y-4">
-                            <div class="flex flex-col">
-                                <label for="slots" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Number of Slots
-                                </label>
-                                <input min="1" v-model="noOfSlots" id="slots" name="slots" type="number"
-                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    required :disabled="ticketsStore.loading" />
-                                <ValidationError :errors="ticketsStore.errors" field="slots" />
-                                <ValidationError :errors="ticketsStore.errors" field="general" />
-                            </div>
+                        <div class="mt-8 bg-white rounded-lg shadow overflow-hidden">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-4">Generate Booking Ticket</h3>
+                                <form @submit.prevent="generateBookingTicket" novalidate>
+                                    <div class="space-y-4">
+                                        <div class="flex flex-col">
+                                            <label for="slots" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Number of Slots
+                                            </label>
+                                            <input min="1" v-model="noOfSlots" id="slots" name="slots" type="number"
+                                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                required :disabled="ticketsStore.loading" />
+                                            <ValidationError :errors="ticketsStore.errors" field="slots" />
+                                            <ValidationError :errors="ticketsStore.errors" field="general" />
+                                        </div>
 
-                            <div>
-                                <button type="submit" class="btn btn-primary" :disabled="ticketsStore.loading">
-                                    <IconSpinner class="animate-spin" v-show="ticketsStore.loading" />
-                                    Get Ticket
-                                </button>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary"
+                                                :disabled="ticketsStore.loading">
+                                                <IconSpinner class="animate-spin" v-show="ticketsStore.loading" />
+                                                Get Ticket
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -104,9 +102,11 @@ onBeforeUnmount(ticketsStore.resetErrors);
 tourStore.getTour(route.params.id);
 bookingsStore.getUserBooking(route.params.id);
 
-function generateBookingTicket() {
-    ticketsStore.generateTicket(bookingsStore.bookingDetails.id, noOfSlots.value);
-    bookingsStore.getUserBooking(route.params.id);
-    noOfSlots.value = 1;
+async function generateBookingTicket() {
+    ticketsStore.generateTicket(bookingsStore.bookingDetails.id, noOfSlots.value)
+        .then(() => {
+            bookingsStore.getUserBooking(route.params.id);
+            noOfSlots.value = 1;
+        });
 }
 </script>

@@ -23,12 +23,17 @@ Route::post('auth/login', Auth\LoginController::class);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('auth/logout', Auth\LogoutController::class);
-    Route::apiResource('destinations', DestinationController::class);
+
+    // Tours
     Route::apiResource('tours', TourController::class);
+
+    // Destinations
+    Route::apiResource('destinations', DestinationController::class);
 
     // Bookings
     Route::apiResource('bookings', BookingController::class)->except('update', 'destroy');
     Route::get('bookings/{tour_id}/user', [BookingController::class, 'showUserBooking'])->name('bookings.user.show');
 
+    // Tickets
     Route::apiResource('tickets', TicketController::class)->only('index', 'store');
 });

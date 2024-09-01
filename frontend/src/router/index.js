@@ -33,6 +33,12 @@ const router = createRouter({
       beforeEnter: auth,
       component: () => import('@/views/Tours/ShowView.vue')
     },
+    {
+      path: '/tours/create',
+      name: 'tours.create',
+      beforeEnter: auth,
+      component: () => import('@/views/Tours/CreateView.vue')
+    },
   ],
 })
 
