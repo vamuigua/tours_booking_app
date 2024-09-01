@@ -27,6 +27,12 @@ const router = createRouter({
       beforeEnter: auth,
       component: () => import('@/views/Tours/IndexView.vue')
     },
+    {
+      path: '/tours/:id',
+      name: 'tours.show',
+      beforeEnter: auth,
+      component: () => import('@/views/Tours/ShowView.vue')
+    },
   ],
 })
 

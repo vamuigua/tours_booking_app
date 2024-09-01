@@ -18,7 +18,7 @@ const auth = useAuth()
           </h2>
           <template v-if="auth.check">
             <RouterLink class="router-link" :to="{ name: 'tours.index' }">
-              Available Tours
+              Tours
             </RouterLink>
           </template>
           <template v-else>

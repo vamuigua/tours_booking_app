@@ -18,7 +18,7 @@ class TourResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'price' => $this->price,
+            'price' => number_format($this->price, 2, '.', ','),
             'slots' => $this->slots,
             'destination' => DestinationResource::make($this->destination)
         ];

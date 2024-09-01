@@ -14,13 +14,13 @@ class BookingResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {        
+    {
         return [
             'id' => $this->id,
             'status' => $this->status,
             'user' => UserResource::make($this->user),
             'tour' => TourResource::make($this->tour),
-            'total_price' => $this->totalPrice,
+            'total_price' => number_format($this->totalPrice, 2, '.', ','),
             'tickets' => TicketResource::collection($this->tickets),
             'created_at' => $this->created_at->toDateTimeString(),
         ];

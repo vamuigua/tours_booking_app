@@ -38,4 +38,15 @@ class BookingController extends Controller
 
         return BookingResource::make($booking);
     }
+
+    public function showUserBooking($tour_id)
+    {
+        $booking = Booking::where('user_id', auth()->id())->where('tour_id', $tour_id)->first();
+
+        if ($booking) {
+            return BookingResource::make($booking);
+        }
+
+        return response()->json([]);
+    }
 }

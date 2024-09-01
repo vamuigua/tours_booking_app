@@ -25,6 +25,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('auth/logout', Auth\LogoutController::class);
     Route::apiResource('destinations', DestinationController::class);
     Route::apiResource('tours', TourController::class);
+
+    // Bookings
     Route::apiResource('bookings', BookingController::class)->except('update', 'destroy');
+    Route::get('bookings/{tour_id}/user', [BookingController::class, 'showUserBooking'])->name('bookings.user.show');
+
     Route::apiResource('tickets', TicketController::class)->only('index', 'store');
 });
