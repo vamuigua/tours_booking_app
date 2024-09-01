@@ -12,7 +12,7 @@
   }
 
   .btn {
-    @apply inline-flex items-center gap-2 justify-center p-2 font-bold relative disabled: !opacity-50 disabled: !cursor-progress;
+    @apply inline-flex items-center gap-2 justify-center p-2 font-bold relative disabled:!opacity-50 disabled:!cursor-progress;
   }
 
   .btn-primary {
