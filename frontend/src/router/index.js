@@ -45,6 +45,12 @@ const router = createRouter({
       beforeEnter: auth,
       component: () => import('@/views/Admin/Bookings/IndexView.vue')
     },
+    {
+      path: '/bookings/:id/tickets',
+      name: 'admin.bookings.tickets',
+      beforeEnter: auth,
+      component: () => import('@/views/Admin/Bookings/GeneratedTickets.vue')
+    },
   ],
 })
 

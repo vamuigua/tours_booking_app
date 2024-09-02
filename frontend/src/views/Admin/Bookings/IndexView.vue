@@ -37,7 +37,11 @@
                         </td>
                         <td class="py-3 px-6">{{ booking.tickets.length }}</td>
                         <td class="py-3 px-6">KSH.{{ booking.total_price }}</td>
-                        <td class="py-3 px-6 text-blue-500 cursor-pointer hover:underline">View Tickets</td>
+                        <td class="py-3 px-6 text-blue-500 cursor-pointer hover:underline">
+                            <router-link :to="{ name: 'admin.bookings.tickets', params: { id: booking.id } }">
+                                View Tickets
+                            </router-link>
+                        </td>
                     </tr>
                 </tbody>
             </table>

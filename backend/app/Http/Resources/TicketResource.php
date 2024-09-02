@@ -18,6 +18,7 @@ class TicketResource extends JsonResource
             'id' => $this->id,
             'booking_id' => $this->booking_id,
             'ticket_number' => $this->ticket_number,
+            'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
 }
