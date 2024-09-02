@@ -34,7 +34,16 @@
                         <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
                         <hr class="mb-4">
                         <p class="text-gray-600">Booked on: {{ Date(bookingsStore.bookingDetails.created_at) }}</p>
-                        <p class="text-gray-600">Status: {{ bookingsStore.bookingDetails.status.toUpperCase() }}</p>
+                        <p class="text-gray-600">
+                            Status:
+                            <span :class="{
+                                'bg-green-100 text-green-800': bookingsStore.bookingDetails.status === 'confirmed',
+                                'bg-yellow-100 text-yellow-800': bookingsStore.bookingDetails.status === 'pending',
+                                'bg-red-100 text-red-800': bookingsStore.bookingDetails.status === 'canceled',
+                            }" class="px-2 py-1 rounded-full text-xs font-bold">
+                                {{ bookingsStore.bookingDetails.status.toUpperCase() }}
+                            </span>
+                        </p>
                         <p class="text-gray-600">Name: {{ bookingsStore.bookingDetails.user.name }}</p>
                         <p class="text-gray-600">Total Price: KSH. {{ bookingsStore.bookingDetails.total_price }}</p>
 

@@ -35,9 +35,15 @@ const router = createRouter({
     },
     {
       path: '/tours/create',
-      name: 'tours.create',
+      name: 'admin.tours.create',
       beforeEnter: auth,
-      component: () => import('@/views/Tours/CreateView.vue')
+      component: () => import('@/views/Admin/Tours/CreateView.vue')
+    },
+    {
+      path: '/bookings',
+      name: 'admin.bookings.index',
+      beforeEnter: auth,
+      component: () => import('@/views/Admin/Bookings/IndexView.vue')
     },
   ],
 })

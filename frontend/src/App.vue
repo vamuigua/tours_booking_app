@@ -20,8 +20,11 @@ const auth = useAuth()
             <RouterLink class="router-link" :to="{ name: 'tours.index' }">
               Tours
             </RouterLink>
-            <RouterLink class="router-link" :to="{ name: 'tours.create' }">
+            <RouterLink class="router-link" :to="{ name: 'admin.tours.create' }">
               Create Tour
+            </RouterLink>
+            <RouterLink class="router-link" :to="{ name: 'admin.bookings.index' }">
+              Bookings
             </RouterLink>
           </template>
           <template v-else>
