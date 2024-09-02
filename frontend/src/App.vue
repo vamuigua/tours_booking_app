@@ -11,7 +11,7 @@ const auth = useAuth()
       <nav class="flex gap-4 justify-between">
         <div class="flex gap-4 items-center">
           <h2 class="text-xl font-bold">
-            <div class="inline-flex items-center justify-center bg-blue-600 w-6 h-6 text-center text-white rounded">
+            <div class="inline-flex items-center justify-center w-6 h-6 text-center text-white rounded">
               🧳
             </div>
             Tours Booking
