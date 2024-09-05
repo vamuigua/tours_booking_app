@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\DestinationController;
 use App\Http\Controllers\Api\V1\TicketController;
 use App\Http\Controllers\Api\V1\TourController;
+use App\Http\Resources\UserResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +37,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Tickets
     Route::apiResource('tickets', TicketController::class)->only('index', 'store');
+
+    // Users
+    Route::get('auth/user', function () {
+        return UserResource::make(auth()->user());
+    });
 });

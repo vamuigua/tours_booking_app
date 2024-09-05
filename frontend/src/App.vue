@@ -20,10 +20,11 @@ const auth = useAuth()
             <RouterLink class="router-link" :to="{ name: 'tours.index' }">
               Tours
             </RouterLink>
-            <RouterLink class="router-link" :to="{ name: 'admin.tours.create' }">
+            <RouterLink v-if="auth.isAdmin" class="router-link" :to="{ name: 'admin.tours.create' }">
               Create Tour
             </RouterLink>
-            <RouterLink class="router-link" :to="{ name: 'admin.bookings.index' }">
+            <RouterLink v-if="auth.isAdmin" class="router-link"
+              :to="{ name: 'admin.bookings.index' }">
               Bookings
             </RouterLink>
           </template>
@@ -33,6 +34,7 @@ const auth = useAuth()
         </div>
         <div class="flex gap-4 items-center">
           <template v-if="auth.check">
+            <p>Welcome back, {{ auth.authUser?.name }}</p>
             <button @click="auth.logout" class="router-link">Logout</button>
           </template>
           <template v-else>

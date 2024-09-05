@@ -33,7 +33,7 @@
                     <div v-else class="space-y-4">
                         <h3 class="text-xl font-semibold mb-4">Booking Details</h3>
                         <hr class="mb-4">
-                        <p class="text-gray-600">Booked on: {{ Date(bookingsStore.bookingDetails.created_at) }}</p>
+                        <p class="text-gray-600">Booked on: {{ bookingsStore.bookingDetails.created_at }}</p>
                         <p class="text-gray-600">
                             Status:
                             <span :class="{

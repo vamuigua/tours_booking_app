@@ -36,19 +36,19 @@ const router = createRouter({
     {
       path: '/tours/create',
       name: 'admin.tours.create',
-      beforeEnter: auth,
+      beforeEnter: authAdmin,
       component: () => import('@/views/Admin/Tours/CreateView.vue')
     },
     {
       path: '/bookings',
       name: 'admin.bookings.index',
-      beforeEnter: auth,
+      beforeEnter: authAdmin,
       component: () => import('@/views/Admin/Bookings/IndexView.vue')
     },
     {
       path: '/bookings/:id/tickets',
       name: 'admin.bookings.tickets',
-      beforeEnter: auth,
+      beforeEnter: authAdmin,
       component: () => import('@/views/Admin/Bookings/GeneratedTickets.vue')
     },
   ],
@@ -61,6 +61,19 @@ function auth(to, from, next) {
   }
 
   next()
+}
+
+function authAdmin(to, from, next) {
+  const authStore = useAuth();
+  if (!authStore.isAuthenticated) {
+    return next({ name: 'login' });
+  }
+
+  if (!authStore.isAdmin) {
+    return next({ name: 'tours.index' });
+  }
+
+  next();
 }
 
 function guest(to, from, next) {
