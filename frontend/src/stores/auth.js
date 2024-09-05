@@ -11,13 +11,17 @@ export const useAuth = defineStore('auth', () => {
   const isAdmin = computed(() => authUser.value?.role === 'admin');
 
   function setAuthStatus(authStatus) {
+    if (authStatus) {
+      getUserData();
+    } else {
+      authUser.value = null;
+    }
+
     isAuthenticated.value = authStatus
   }
 
   function login() {
     setAuthStatus(true)
-
-    getUserData();    
 
     if (isAdmin.value) return router.push({ name: 'admin.bookings.index' })
     if (!isAdmin.value) return router.push({ name: 'tours.index' })
