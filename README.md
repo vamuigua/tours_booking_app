@@ -88,7 +88,7 @@ Generate an Application Key
 
 Migrate the Database
 
-*PS: Ensure you have created a database e.g `car_packing_app` before running the migrate command*
+*PS: Ensure you have created a database e.g `tours_booking_app` before running the migrate command*
 
 ```bash
   php artisan migrate
