@@ -14,11 +14,20 @@ class BookingController extends Controller
     {
         $bookingQuery = Booking::with('user', 'tour', 'tickets');
 
-        if (auth()->user()->isAdmin()) {
-            return BookingResource::collection($bookingQuery->get());
+        if ($search = request('search')) {
+            $bookingQuery->whereHas('user', function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+                ->orWhereHas('tour', function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%{$search}%");
+                });
         }
 
-        $userBookings = $bookingQuery->where('user_id', auth()->id())->get();
+        if (auth()->user()->isAdmin()) {
+            return BookingResource::collection($bookingQuery->paginate(5));
+        }
+
+        $userBookings = $bookingQuery->where('user_id', auth()->id())->paginate(5);
 
         return BookingResource::collection($userBookings);
     }

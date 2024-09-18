@@ -3,7 +3,7 @@
         <h1 class="text-2xl font-bold mb-4 text-gray-800">All Bookings</h1>
 
         <div class="flex justify-between items-center mb-4">
-            <input type="text" v-model="bookingsStore.searchQuery" placeholder="Search..."
+            <input type="text" v-model="searchQuery" placeholder="Search username or tour..."
                 class="form-input w-full md:w-1/3 border border-gray-300 rounded-lg p-2 shadow-sm focus:outline-none focus:border-blue-500" />
         </div>
 
@@ -11,18 +11,16 @@
             <table class="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
                 <thead>
                     <tr class="bg-gray-200 text-left text-sm leading-normal text-gray-600 uppercase">
-                        <th @click="bookingsStore.sortBy('user.name')" class="py-3 px-6 cursor-pointer">Username</th>
-                        <th @click="bookingsStore.sortBy('tour.name')" class="py-3 px-6 cursor-pointer">Tour</th>
-                        <th @click="bookingsStore.sortBy('status')" class="py-3 px-6 cursor-pointer">Status</th>
-                        <th @click="bookingsStore.sortBy('tickets.length')" class="py-3 px-6 cursor-pointer">Number of
-                            Tickets</th>
-                        <th @click="bookingsStore.sortBy('total_price')" class="py-3 px-6 cursor-pointer">Total Price
-                        </th>
+                        <th class="py-3 px-6 cursor-pointer">Username</th>
+                        <th class="py-3 px-6 cursor-pointer">Tour</th>
+                        <th class="py-3 px-6 cursor-pointer">Status</th>
+                        <th class="py-3 px-6 cursor-pointer">Number of Tickets</th>
+                        <th class="py-3 px-6 cursor-pointer">Total Price</th>
                         <th class="py-3 px-6">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 text-sm font-light">
-                    <tr v-for="booking in bookingsStore.filteredBookings" :key="booking.id"
+                    <tr v-for="booking in bookingsStore.bookings.data" :key="booking.id"
                         class="border-b border-gray-200 hover:bg-gray-100">
                         <td class="py-3 px-6">{{ booking.user.name }}</td>
                         <td class="py-3 px-6">{{ booking.tour.name }}</td>
@@ -45,34 +43,38 @@
                     </tr>
                 </tbody>
             </table>
+            <div v-if="bookingsStore.bookings.data == null" class="bg-yellow-100 text-yellow-800 p-4 rounded-lg">
+                <p>Loading...</p>
+            </div>
+            <div v-if="bookingsStore.bookings.data <= 0" class="bg-yellow-100 text-yellow-800 p-4 rounded-lg">
+                <p>Data Not Available.</p>
+            </div>
         </div>
 
         <div class="mt-4">
-            <vue-awesome-paginate :total-items="bookingsStore.bookings.length" v-model="bookingsStore.currentPage"
-                :items-per-page="bookingsStore.perPage" :max-pages-shown="5" class="pagination" />
+            <TailwindPagination :data="bookingsStore.bookings"
+                @pagination-change-page="page => bookingsStore.fetchBookings(page, searchQuery)" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useBookings } from '@/stores/bookings';
 
 const bookingsStore = useBookings();
+const searchQuery = ref('');
+let debounceTimeout = null;
 
 onMounted(() => {
     bookingsStore.fetchBookings();
 });
+
+watch(searchQuery, (newQuery) => {
+    if (debounceTimeout) clearTimeout(debounceTimeout);
+
+    debounceTimeout = setTimeout(() => {
+        bookingsStore.fetchBookings(1, newQuery);
+    }, 500);
+});
 </script>
-
-<style scoped>
-.table th,
-.table td {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-}
-
-.table th {
-    cursor: pointer;
-}
-</style>

@@ -9,6 +9,7 @@ import ValidationError from '@/components/ValidationError.vue'
 import IconSpinner from '@/components/IconSpinner.vue'
 
 import VueAwesomePaginate from "vue-awesome-paginate";
+import { TailwindPagination } from 'laravel-vue-pagination';
 
 import './assets/main.css'
 import "vue-awesome-paginate/dist/style.css";
@@ -26,5 +27,6 @@ app.use(VueAwesomePaginate)
 
 app.component('ValidationError', ValidationError)
 app.component('IconSpinner', IconSpinner)
+app.component('TailwindPagination', TailwindPagination)
 
 app.mount('#app')
