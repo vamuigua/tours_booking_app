@@ -1,6 +1,8 @@
 import Axios from 'axios'
-import { useAuth } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
+const router = useRouter();
 const apiUrl = import.meta.env.VITE_TOURS_BOOKING_BACKEND_API
 
 const axios = Axios.create({
@@ -33,8 +35,9 @@ axios.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401 || error.response?.status === 419) {
-            const auth = useAuth()
-            auth.destroyTokenAndRedirectTo()
+            const auth = useAuthStore()
+            auth.destroyTokenAndRedirect()
+            router.push({ name: 'login' });
         }
 
         return Promise.reject(error)

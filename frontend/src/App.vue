@@ -1,10 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { useAuth } from '@/stores/auth'
-
-const auth = useAuth()
-</script>
-
 <template>
   <header class="py-6 bg-gray-100 shadow">
     <div class="container md:px-2 px-4 mx-auto">
@@ -23,8 +16,7 @@ const auth = useAuth()
             <RouterLink v-if="auth.isAdmin" class="router-link" :to="{ name: 'admin.tours.create' }">
               Create Tour
             </RouterLink>
-            <RouterLink v-if="auth.isAdmin" class="router-link"
-              :to="{ name: 'admin.bookings.index' }">
+            <RouterLink v-if="auth.isAdmin" class="router-link" :to="{ name: 'admin.bookings.index' }">
               Bookings
             </RouterLink>
           </template>
@@ -35,7 +27,7 @@ const auth = useAuth()
         <div class="flex gap-4 items-center">
           <template v-if="auth.check">
             <p>Welcome back, {{ auth.authUser?.name }}</p>
-            <button @click="auth.logout" class="router-link">Logout</button>
+            <button @click="logout.handleSubmit" class="router-link">Logout</button>
           </template>
           <template v-else>
             <RouterLink class="router-link" :to="{ name: 'login' }"> Login </RouterLink>
@@ -50,3 +42,12 @@ const auth = useAuth()
     <RouterView />
   </div>
 </template>
+
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useLogout } from './composables/logout';
+
+const auth = useAuthStore()
+const logout = useLogout();
+</script>

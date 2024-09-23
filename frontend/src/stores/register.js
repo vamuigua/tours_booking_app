@@ -1,9 +1,9 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { useAuth } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
 export const useRegister = defineStore('register', () => {
-  const auth = useAuth()
+  const auth = useAuthStore()
   const errors = reactive({})
   const loading = ref(false)
   const form = reactive({

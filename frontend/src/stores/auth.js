@@ -1,55 +1,45 @@
-import { computed, ref } from 'vue'
-import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
-import { useRouter } from 'vue-router'
+import { defineStore } from 'pinia';
+import { useStorage } from '@vueuse/core';
 
-export const useAuth = defineStore('auth', () => {
-  const router = useRouter()
-  const isAuthenticated = useStorage('isAuthenticated', false)
-  const check = computed(() => isAuthenticated.value)
-  const authUser = ref(null);
-  const isAdmin = computed(() => authUser.value?.role === 'admin');
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    isAuthenticated: useStorage('isAuthenticated', false),
+    authUser: null,
+  }),
 
-  function setAuthStatus(authStatus) {
-    if (authStatus) {
-      getUserData();
-    } else {
-      authUser.value = null;
-    }
+  getters: {
+    check: (state) => state.isAuthenticated,
+    isAdmin: (state) => state.authUser?.role === 'admin',
+  },
 
-    isAuthenticated.value = authStatus
-  }
+  actions: {
+    async setAuthStatus(authStatus) {
+      if (authStatus) {
+        await this.getUserData();
+      } else {
+        this.authUser = null;
+      }
+      this.isAuthenticated = authStatus;
+    },
 
-  function login() {
-    setAuthStatus(true)
+    async login() {
+      await this.setAuthStatus(true);
+      return this.isAuthenticated;
+    },
 
-    if (isAdmin.value) return router.push({ name: 'admin.bookings.index' })
-    if (!isAdmin.value) return router.push({ name: 'tours.index' })
-  }
+    async getUserData() {
+      try {
+        const response = await window.axios.get('auth/user');
+        this.authUser = response.data.data;
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    },
 
-  async function getUserData() {
-    try {
-      const response = await window.axios.get('auth/user');
-      authUser.value = response.data.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
+    async destroyTokenAndRedirect() {
+      await this.setAuthStatus(false);
+    },
+  },
 
-  function destroyTokenAndRedirectTo(routeName = 'login') {
-    setAuthStatus(false)
-    router.push({ name: routeName })
-  }
-
-  async function logout() {
-    return window.axios.post('auth/logout').finally(() => {
-      destroyTokenAndRedirectTo()
-    })
-  }
-
-  return { login, logout, check, destroyTokenAndRedirectTo, isAuthenticated, authUser, getUserData, isAdmin }
-},
-  {
-    persist: true,
-  }
-)
+  persist: true,
+});

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuth } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,7 +55,7 @@ const router = createRouter({
 })
 
 function auth(to, from, next) {
-  const authStore = useAuth()
+  const authStore = useAuthStore()
   if (!authStore.isAuthenticated) {
     return next({ name: 'login' })
   }
@@ -64,7 +64,7 @@ function auth(to, from, next) {
 }
 
 function authAdmin(to, from, next) {
-  const authStore = useAuth();
+  const authStore = useAuthStore();
   if (!authStore.isAuthenticated) {
     return next({ name: 'login' });
   }
@@ -77,7 +77,7 @@ function authAdmin(to, from, next) {
 }
 
 function guest(to, from, next) {
-  const authStore = useAuth()
+  const authStore = useAuthStore()
   if (authStore.isAuthenticated) {
     return next({ name: 'tours.index' })
   }
