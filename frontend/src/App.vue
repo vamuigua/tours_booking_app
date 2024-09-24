@@ -27,7 +27,7 @@
         <div class="flex gap-4 items-center">
           <template v-if="auth.check">
             <p>Welcome back, {{ auth.authUser?.name }}</p>
-            <button @click="logout.handleSubmit" class="router-link">Logout</button>
+            <button @click="auth.logout" class="router-link">Logout</button>
           </template>
           <template v-else>
             <RouterLink class="router-link" :to="{ name: 'login' }"> Login </RouterLink>
@@ -46,8 +46,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useLogout } from './composables/logout';
 
 const auth = useAuthStore()
-const logout = useLogout();
 </script>

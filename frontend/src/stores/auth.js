@@ -36,9 +36,15 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async destroyTokenAndRedirect() {
+    async destroyTokenAndRedirectTo(routeName = 'login') {
       await this.setAuthStatus(false);
+      this.router.push({ name: routeName });
     },
+
+    async logout() {
+      await window.axios.post('auth/logout')
+      await this.destroyTokenAndRedirectTo();
+    }
   },
 
   persist: true,
