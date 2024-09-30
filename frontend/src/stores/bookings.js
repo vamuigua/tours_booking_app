@@ -12,11 +12,13 @@ export const useBookings = defineStore("bookings", () => {
     const currentPage = ref(1);
     const perPage = ref(10);
 
-    async function fetchBookings(page = 1, searchQuery = '') {
-        // TODO: Add filter for booking status
-
-        const response = await window.axios.get(`bookings?page=${page}&search=${searchQuery}`);
-        bookings.value = response.data;
+    async function fetchBookings(page = 1, searchQuery = '', selectedBookingStatus = '') {
+        try {
+            const response = await window.axios.get(`bookings?page=${page}&search=${searchQuery}&status=${selectedBookingStatus}`);
+            bookings.value = response.data;
+        } catch (error) {
+            console.error('Error fetching bookings:', error);
+        }
     }
 
     function bookTour(data) {

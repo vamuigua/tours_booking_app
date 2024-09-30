@@ -23,6 +23,10 @@ class BookingController extends Controller
                 });
         }
 
+        if ($status = request('status')) {
+            $bookingQuery->where('status', $status);
+        }
+
         if (auth()->user()->isAdmin()) {
             return BookingResource::collection($bookingQuery->paginate(5));
         }

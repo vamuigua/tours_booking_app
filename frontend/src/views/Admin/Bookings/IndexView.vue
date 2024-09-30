@@ -2,10 +2,22 @@
     <div class="mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4 text-gray-800">All Bookings</h1>
 
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col md:flex-row justify-between md:space-x-4 items-center mb-4">
+            <!-- Search input -->
             <input type="text" v-model="searchQuery" placeholder="Search username or tour..."
-                class="form-input w-full md:w-1/3 border border-gray-300 rounded-lg p-2 shadow-sm focus:outline-none focus:border-blue-500" />
+                class="form-input w-full md:w-1/3 border border-gray-300 rounded-lg p-2 shadow-sm focus:outline-none focus:border-blue-500 mb-2 md:mb-0" />
+
+            <!-- Booking status dropdown -->
+            <select name="booking-status" id="bookingStatus"
+                class="form-input w-full md:w-1/3 border border-gray-300 rounded-lg p-2 shadow-sm focus:outline-none focus:border-blue-500"
+                v-model="selectedBookingStatus">
+                <option value="" selected>-- Filter by Status --</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
         </div>
+
 
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
@@ -28,7 +40,7 @@
                             <span :class="{
                                 'bg-green-100 text-green-800': booking.status === 'confirmed',
                                 'bg-yellow-100 text-yellow-800': booking.status === 'pending',
-                                'bg-red-100 text-red-800': booking.status === 'canceled',
+                                'bg-red-100 text-red-800': booking.status === 'cancelled',
                             }" class="px-2 py-1 rounded-full text-xs font-bold">
                                 {{ booking.status.toUpperCase() }}
                             </span>
@@ -53,7 +65,7 @@
 
         <div class="mt-4">
             <TailwindPagination :data="bookingsStore.bookings"
-                @pagination-change-page="page => bookingsStore.fetchBookings(page, searchQuery)" />
+                @pagination-change-page="page => bookingsStore.fetchBookings(page, searchQuery, selectedBookingStatus)" />
         </div>
     </div>
 </template>
@@ -64,6 +76,7 @@ import { useBookings } from '@/stores/bookings';
 
 const bookingsStore = useBookings();
 const searchQuery = ref('');
+const selectedBookingStatus = ref('');
 let debounceTimeout = null;
 
 onMounted(() => {
@@ -74,7 +87,11 @@ watch(searchQuery, (newQuery) => {
     if (debounceTimeout) clearTimeout(debounceTimeout);
 
     debounceTimeout = setTimeout(() => {
-        bookingsStore.fetchBookings(1, newQuery);
+        bookingsStore.fetchBookings(1, newQuery, selectedBookingStatus.value);
     }, 500);
+});
+
+watch(selectedBookingStatus, (newStatus) => {
+    bookingsStore.fetchBookings(1, searchQuery.value, newStatus);
 });
 </script>
