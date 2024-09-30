@@ -12,9 +12,9 @@ export const useBookings = defineStore("bookings", () => {
     const currentPage = ref(1);
     const perPage = ref(10);
 
-    async function fetchBookings(page = 1, searchQuery = '', selectedBookingStatus = '') {
+    async function fetchBookings(page = 1, search = '', status = '') {
         try {
-            const response = await window.axios.get(`bookings?page=${page}&search=${searchQuery}&status=${selectedBookingStatus}`);
+            const response = await window.axios.get(`bookings?page=${page}&search=${search}&status=${status}`);
             bookings.value = response.data;
         } catch (error) {
             console.error('Error fetching bookings:', error);
