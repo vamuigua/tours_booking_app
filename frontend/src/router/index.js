@@ -51,6 +51,10 @@ const router = createRouter({
       beforeEnter: authAdmin,
       component: () => import('@/views/Admin/Bookings/GeneratedTickets.vue')
     },
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('../views/NotFoundView.vue')
+    },
   ],
 })
 

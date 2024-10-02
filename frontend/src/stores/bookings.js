@@ -6,15 +6,16 @@ export const useBookings = defineStore("bookings", () => {
     const loading = ref(false)
     const bookingDetails = ref(null)
     const bookings = ref({});
-    const searchQuery = ref('');
-    const sortKey = ref('');
-    const sortAsc = ref(true);
-    const currentPage = ref(1);
-    const perPage = ref(10);
 
-    async function fetchBookings(page = 1, search = '', status = '') {
+    async function fetchBookings(page = 1, search = '', status = '', order_column = 'created_at', order_direction = 'desc') {
         try {
-            const response = await window.axios.get(`bookings?page=${page}&search=${search}&status=${status}`);
+            const response = await window.axios.get('bookings' +
+                '?page=' + page +
+                '&search=' + search +
+                '&status=' + status +
+                '&order_column=' + order_column +
+                '&order_direction=' + order_direction
+            );
             bookings.value = response.data;
         } catch (error) {
             console.error('Error fetching bookings:', error);
@@ -85,11 +86,6 @@ export const useBookings = defineStore("bookings", () => {
         getUserBooking,
         resetErrors,
         bookings,
-        searchQuery,
-        sortKey,
-        sortAsc,
-        currentPage,
-        perPage,
         fetchBookings,
     };
 })

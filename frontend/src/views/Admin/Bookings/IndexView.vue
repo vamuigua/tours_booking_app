@@ -18,16 +18,84 @@
             </select>
         </div>
 
-
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
                 <thead>
                     <tr class="bg-gray-200 text-left text-sm leading-normal text-gray-600 uppercase">
-                        <th class="py-3 px-6 cursor-pointer">Username</th>
-                        <th class="py-3 px-6 cursor-pointer">Tour</th>
-                        <th class="py-3 px-6 cursor-pointer">Status</th>
-                        <th class="py-3 px-6 cursor-pointer">Number of Tickets</th>
-                        <th class="py-3 px-6 cursor-pointer">Total Price</th>
+                        <th class="py-3 px-6">
+                            <div class="flex flex-row items-center justify-between cursor-pointer"
+                                @click="updateOrdering('user_name')">
+                                <div :class="{ 'text-blue-600': orderColumn === 'user_name' }">
+                                    Username
+                                </div>
+                                <div class="text-xl">
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'asc' && orderColumn === 'user_name',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'asc' && orderColumn === 'user_name',
+                                    }">&uarr;</span>
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'desc' && orderColumn === 'user_name',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'desc' && orderColumn === 'user_name',
+                                    }">&darr;</span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="py-3 px-6">
+                            <div class="flex flex-row items-center justify-between cursor-pointer"
+                                @click="updateOrdering('tour_name')">
+                                <div :class="{ 'text-blue-600': orderColumn === 'tour_name' }">
+                                    Tour
+                                </div>
+                                <div class="text-xl">
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'asc' && orderColumn === 'tour_name',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'asc' && orderColumn === 'tour_name',
+                                    }">&uarr;</span>
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'desc' && orderColumn === 'tour_name',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'desc' && orderColumn === 'tour_name',
+                                    }">&darr;</span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="py-3 px-6">
+                            <div class="flex flex-row items-center justify-between cursor-pointer"
+                                @click="updateOrdering('status')">
+                                <div :class="{ 'text-blue-600': orderColumn === 'status' }">
+                                    Status
+                                </div>
+                                <div class="text-xl">
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'asc' && orderColumn === 'status',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'asc' && orderColumn === 'status',
+                                    }">&uarr;</span>
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'desc' && orderColumn === 'status',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'desc' && orderColumn === 'status',
+                                    }">&darr;</span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="py-3 px-6">Tickets</th>
+                        <th class="py-3 px-6">Total Price</th>
+                        <th class="py-3 px-6">
+                            <div class="flex flex-row items-center justify-between cursor-pointer"
+                                @click="updateOrdering('created_at')">
+                                <div :class="{ 'text-blue-600': orderColumn === 'created_at' }">
+                                    Created At
+                                </div>
+                                <div class="text-xl">
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'asc' && orderColumn === 'created_at',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'asc' && orderColumn === 'created_at',
+                                    }">&uarr;</span>
+                                    <span :class="{
+                                        'text-blue-600': orderDirection === 'desc' && orderColumn === 'created_at',
+                                        'hidden': orderDirection !== '' && orderDirection !== 'desc' && orderColumn === 'created_at',
+                                    }">&darr;</span>
+                                </div>
+                            </div>
+                        </th>
                         <th class="py-3 px-6">Actions</th>
                     </tr>
                 </thead>
@@ -47,6 +115,7 @@
                         </td>
                         <td class="py-3 px-6">{{ booking.tickets.length }}</td>
                         <td class="py-3 px-6">KSH.{{ booking.total_price }}</td>
+                        <td class="py-3 px-6">{{ booking.created_at }}</td>
                         <td class="py-3 px-6 text-blue-500 cursor-pointer hover:underline">
                             <router-link :to="{ name: 'admin.bookings.tickets', params: { id: booking.id } }">
                                 View Tickets
@@ -65,7 +134,7 @@
 
         <div class="mt-4">
             <TailwindPagination :data="bookingsStore.bookings"
-                @pagination-change-page="page => bookingsStore.fetchBookings(page, searchQuery, selectedBookingStatus)" />
+                @pagination-change-page="page => bookingsStore.fetchBookings(page, searchQuery, selectedBookingStatus, orderColumn, orderDirection)" />
         </div>
     </div>
 </template>
@@ -75,8 +144,12 @@ import { onMounted, ref, watch } from 'vue';
 import { useBookings } from '@/stores/bookings';
 
 const bookingsStore = useBookings();
+
 const searchQuery = ref('');
 const selectedBookingStatus = ref('');
+const orderColumn = ref('created_at');
+const orderDirection = ref('desc');
+
 let debounceTimeout = null;
 
 onMounted(() => {
@@ -87,11 +160,17 @@ watch(searchQuery, (newQuery) => {
     if (debounceTimeout) clearTimeout(debounceTimeout);
 
     debounceTimeout = setTimeout(() => {
-        bookingsStore.fetchBookings(1, newQuery, selectedBookingStatus.value);
+        bookingsStore.fetchBookings(1, newQuery, selectedBookingStatus.value, orderColumn.value, orderDirection.value);
     }, 500);
 });
 
 watch(selectedBookingStatus, (newStatus) => {
-    bookingsStore.fetchBookings(1, searchQuery.value, newStatus);
+    bookingsStore.fetchBookings(1, searchQuery.value, newStatus, orderColumn.value, orderDirection.value);
 });
+
+const updateOrdering = (column) => {
+    orderColumn.value = column;
+    orderDirection.value = (orderDirection.value === 'asc') ? 'desc' : 'asc';
+    bookingsStore.fetchBookings(1, searchQuery.value, selectedBookingStatus.value, orderColumn.value, orderDirection.value);
+};
 </script>
