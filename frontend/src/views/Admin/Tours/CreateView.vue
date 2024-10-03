@@ -28,13 +28,17 @@
             <div class="flex flex-col gap-2 mb-4">
                 <label for="destination_id" class="required">Destination</label>
                 <select v-model="tourStore.form.destination_id" name="destination_id" id="destination_id"
-                    class="form-input" :disabled="tourStore.loading">
-                    <option v-for="destination in destinationStore.destinations" :value="destination.id"
+                    class="form-input" :disabled="tourStore.loading || destinationService.loading.value">
+                    <option v-if="destinationService.loading.value" disabled>Loading destinations...</option>
+                    <option v-for="destination in destinationService.destinations.value" :value="destination.id"
                         :key="destination.id">
                         {{ destination.name }}
                     </option>
                 </select>
                 <ValidationError :errors="tourStore.errors" field="destination_id" />
+                <div v-if="destinationService.errors" class="text-red-500">
+                    {{ destinationService.errors.message }}
+                </div>
             </div>
 
             <div class="border-t h-[1px] my-6"></div>
@@ -48,18 +52,22 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount } from 'vue'
-import { useDestinations } from '@/stores/destinations'
+import { onBeforeUnmount, onMounted } from 'vue'
+import { useDestinations } from '@/composables/destinations'
 import { useTours } from '@/stores/tours'
 
-const destinationStore = useDestinations()
+const destinationService = useDestinations()
 const tourStore = useTours()
 
 onBeforeUnmount(tourStore.resetForm)
 
-destinationStore.getDestinations().then((response) => {
-    if (response.length > 0) {
-        tourStore.form.destination_id = response[0].id
+onMounted(async () => {
+    await destinationService.getDestinations()
+
+    if (destinationService.destinations.value.length > 0) {
+        tourStore.form.destination_id = destinationService.destinations.value[0].id
+    } else {
+        destinationService.errors.message = "No destinations available.";
     }
-})
+});
 </script>

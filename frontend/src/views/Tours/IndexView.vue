@@ -22,10 +22,12 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
 import { useTours } from '@/stores/tours';
 
 const tourStore = useTours();
 
-tourStore.getTours();
-
+onMounted(() => {
+    tourStore.getTours();
+});
 </script>

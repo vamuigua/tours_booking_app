@@ -16,10 +16,13 @@ export const useTours = defineStore('tours', () => {
         destination_id: null
     })
 
-    function getTours() {
-        return window.axios.get('tours').then((response) => (
+    async function getTours() {
+        try {
+            const response = await window.axios.get('tours');
             tours.value = response.data.data
-        ))
+        } catch (error) {
+            console.error('Error fetching tours:', error);
+        }
     }
 
     function getTour(id) {
