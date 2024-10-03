@@ -25,10 +25,13 @@ export const useTours = defineStore('tours', () => {
         }
     }
 
-    function getTour(id) {
-        return window.axios.get(`tours/${id}`).then((response) => (
+    async function getTour(id) {
+        try {
+            const response = await window.axios.get(`tours/${id}`)
             tourDetails.value = response.data.data
-        ))
+        } catch (error) {
+            console.error('Error fetching tour:', error);
+        }
     }
 
     function resetErrors() {
@@ -36,13 +39,11 @@ export const useTours = defineStore('tours', () => {
     }
 
     function resetForm() {
-        form.value = {
-            name: '',
-            description: '',
-            price: 0,
-            slots: 1,
-            destination_id: null
-        }
+        form.name = '';
+        form.description = '';
+        form.price = 0;
+        form.slots = 1;
+        form.destination_id = null;
 
         resetErrors()
     }
@@ -59,7 +60,7 @@ export const useTours = defineStore('tours', () => {
                 router.push({ name: 'tours.index' })
             })
             .catch((error) => {
-                if (error.response.status === 422) {
+                if (error.response?.status === 422) {
                     errors.value = error.response.data.errors
                 }
             })

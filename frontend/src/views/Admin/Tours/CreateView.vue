@@ -16,16 +16,18 @@
             </div>
             <div class="flex flex-col gap-2">
                 <label for="price" class="required"> Price</label>
-                <input type="number" name="price" id="price" class="form-input" v-model="tourStore.form.price"
+                <input type="number" name="price" id="price" class="form-input" v-model="tourStore.form.price" min="0"
                     :disabled="tourStore.loading" />
+                <ValidationError :errors="tourStore.errors" field="price" />
             </div>
             <div class="flex flex-col gap-2">
                 <label for="slots" class="required"> Slots</label>
-                <input type="number" name="slots" id="slots" class="form-input" v-model="tourStore.form.slots"
+                <input type="number" name="slots" id="slots" class="form-input" v-model="tourStore.form.slots" min="1"
                     :disabled="tourStore.loading" />
+                <ValidationError :errors="tourStore.errors" field="slots" />
             </div>
 
-            <div class="flex flex-col gap-2 mb-4">
+            <div class="flex flex-col gap-2 mb-1">
                 <label for="destination_id" class="required">Destination</label>
                 <select v-model="tourStore.form.destination_id" name="destination_id" id="destination_id"
                     class="form-input" :disabled="tourStore.loading || destinationService.loading.value">
@@ -41,25 +43,26 @@
                 </div>
             </div>
 
-            <div class="border-t h-[1px] my-6"></div>
+            <div class="border-t h-[1px] my-2"></div>
 
             <button type="submit" class="btn btn-primary" :disabled="tourStore.loading">
                 <IconSpinner class="animate-spin" v-show="tourStore.loading" />
-                Create Tour
+                <span v-if="tourStore.loading">Processing...</span>
+                <span v-else>Create Tour</span>
             </button>
         </div>
     </form>
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { useDestinations } from '@/composables/destinations'
 import { useTours } from '@/stores/tours'
 
 const destinationService = useDestinations()
 const tourStore = useTours()
 
-onBeforeUnmount(tourStore.resetForm)
+onBeforeMount(tourStore.resetForm);
 
 onMounted(async () => {
     await destinationService.getDestinations()

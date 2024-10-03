@@ -25,9 +25,16 @@ class UpdateTourRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['sometimes', 'required', 'string'],
-            'price' => ['sometimes', 'required', 'numeric'],
-            'slots' => ['sometimes', 'required', 'integer'],
+            'price' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'slots' => ['sometimes', 'required', 'integer', 'min:1'],
             'destination_id' => ['sometimes', 'required', 'exists:destinations,id'],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'destination_id' => 'destination',
         ];
     }
 }

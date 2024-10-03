@@ -14,7 +14,8 @@ class TourController extends Controller
 {
     public function index()
     {
-        return TourResource::collection(Tour::with('destination')->get());
+        $tours = Tour::with('destination')->orderBy('created_at', 'desc')->get();
+        return TourResource::collection($tours);
     }
 
     public function store(StoreTourRequest $request)

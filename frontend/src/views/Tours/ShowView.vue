@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount } from 'vue';
+import { ref, onBeforeMount, onMounted } from 'vue';
 import { useTours } from '@/stores/tours';
 import { useRoute } from 'vue-router';
 import { useBookings } from '@/stores/bookings';
@@ -104,12 +104,16 @@ const ticketsStore = useTickets();
 
 let noOfSlots = ref(1);
 
-onBeforeUnmount(tourStore.resetErrors);
-onBeforeUnmount(bookingsStore.resetErrors);
-onBeforeUnmount(ticketsStore.resetErrors);
+onBeforeMount(() => {
+    tourStore.resetErrors();
+    bookingsStore.resetErrors();
+    ticketsStore.resetErrors();
+});
 
-tourStore.getTour(route.params.id);
-bookingsStore.getUserBooking(route.params.id);
+onMounted(() => {
+    tourStore.getTour(route.params.id);
+    bookingsStore.getUserBooking(route.params.id);
+});
 
 async function generateBookingTicket() {
     ticketsStore.generateTicket(bookingsStore.bookingDetails.id, noOfSlots.value)

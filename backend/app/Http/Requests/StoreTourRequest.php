@@ -25,9 +25,16 @@ class StoreTourRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'price' => ['required', 'numeric'],
-            'slots' => ['required', 'integer'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'slots' => ['required', 'integer', 'min:1'],
             'destination_id' => ['required', 'exists:destinations,id'],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'destination_id' => 'destination',
         ];
     }
 }
