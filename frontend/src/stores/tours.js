@@ -13,7 +13,8 @@ export const useTours = defineStore('tours', () => {
         description: '',
         price: 0,
         slots: 1,
-        destination_id: null
+        destination_id: null,
+        image: '',
     })
 
     async function getTours() {
@@ -44,6 +45,7 @@ export const useTours = defineStore('tours', () => {
         form.price = 0;
         form.slots = 1;
         form.destination_id = null;
+        form.image = '';
 
         resetErrors()
     }
@@ -54,9 +56,16 @@ export const useTours = defineStore('tours', () => {
         loading.value = true
         resetErrors()
 
+        const formData = new FormData();
+
+        Object.keys(form).forEach((key) => {
+            formData.append(key, form[key]);
+        });
+
         return window.axios
-            .post("tours", form)
+            .post("tours", formData)
             .then(() => {
+                resetForm()
                 router.push({ name: 'tours.index' })
             })
             .catch((error) => {
