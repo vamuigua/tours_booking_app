@@ -20,6 +20,7 @@ class TourResource extends JsonResource
             'description' => $this->description,
             'price' => number_format($this->price, 2, '.', ','),
             'slots' => $this->slots,
+            'image' => $this->getTourImage(),
             'destination' => DestinationResource::make($this->destination)
         ];
     }

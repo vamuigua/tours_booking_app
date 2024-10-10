@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Tour;
-use App\Models\User;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TourResource;
 use App\Http\Requests\StoreTourRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateTourRequest;
 
 class TourController extends Controller
@@ -20,7 +20,14 @@ class TourController extends Controller
 
     public function store(StoreTourRequest $request)
     {
-        $tour = Tour::create($request->validated());
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('tours');
+            $validatedData['image'] = $imagePath;
+        }
+
+        $tour = Tour::create($validatedData);
 
         return response()->json(TourResource::make($tour), Response::HTTP_CREATED);
     }
@@ -32,7 +39,15 @@ class TourController extends Controller
 
     public function update(UpdateTourRequest $request, Tour $tour)
     {
-        $tour->update($request->validated());
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            Storage::delete($tour->image);
+            $imagePath = $request->file('image')->store('tours');
+            $validatedData['image'] = $imagePath;
+        }
+
+        $tour->update($validatedData);
 
         return TourResource::make($tour);
     }
@@ -42,6 +57,8 @@ class TourController extends Controller
         if (!auth()->user()->isAdmin()) {
             return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
+
+        $tour->image ? Storage::delete($tour->image) : null;
 
         $tour->delete();
 

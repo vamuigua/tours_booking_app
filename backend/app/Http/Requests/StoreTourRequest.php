@@ -28,6 +28,7 @@ class StoreTourRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'slots' => ['required', 'integer', 'min:1'],
             'destination_id' => ['required', 'exists:destinations,id'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 

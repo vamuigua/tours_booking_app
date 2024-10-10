@@ -28,6 +28,7 @@ class UpdateTourRequest extends FormRequest
             'price' => ['sometimes', 'required', 'numeric', 'min:0'],
             'slots' => ['sometimes', 'required', 'integer', 'min:1'],
             'destination_id' => ['sometimes', 'required', 'exists:destinations,id'],
+            'image' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
